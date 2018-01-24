@@ -31,7 +31,7 @@
   "main": "src/unescape-unicode.js",
   "scripts": {
     "coverage": "nyc report && codecov",
-    "-pretest": "eslint \"src/**/*.js\" \"test/**/*.js\"",
+    "pretest": "eslint \"src/**/*.js\" \"test/**/*.js\"",
     "test": "nyc mocha -R list \"test/**/*.spec.js\"",
     "posttest": "nyc check-coverage"
   },
