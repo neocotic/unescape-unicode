@@ -22,7 +22,6 @@
     "url": "https://github.com/NotNinja/unescape-unicode.git"
   },
   "devDependencies": {
-    "chai": "^4.1.2",
     "codecov": "^3.0.0",
     "eslint": "^4.16.0",
     "eslint-config-notninja": "^0.2.3",
@@ -32,7 +31,7 @@
   "main": "src/unescape-unicode.js",
   "scripts": {
     "coverage": "nyc report && codecov",
-    "pretest": "eslint \"src/**/*.js\" \"test/**/*.js\"",
+    "-pretest": "eslint \"src/**/*.js\" \"test/**/*.js\"",
     "test": "nyc mocha -R list \"test/**/*.spec.js\"",
     "posttest": "nyc check-coverage"
   },
