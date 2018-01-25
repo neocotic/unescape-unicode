@@ -29,6 +29,26 @@ const errors = require('./errors');
 /**
  * TODO: Document
  *
+ * @type {Object.<string, unescapeUnicode~parser>}
+ */
+const parsers = {};
+
+/**
+ * TODO: Document
+ *
+ * @param {string} chars -
+ * @param {unescapeUnicode~parser} parser -
+ * @return {void}
+ */
+function addParser(chars, parser) {
+  chars.split('').forEach((ch) => {
+    parsers[ch] = parser;
+  });
+}
+
+/**
+ * TODO: Document
+ *
  * @param {string} input -
  * @param {number} start -
  * @return {number}
@@ -78,39 +98,11 @@ function unescapeUnicode(input, start) {
 
   for (let i = start; i < end; i++) {
     const ch = input[i];
-    const code = ch.charCodeAt(0);
+    const parser = parsers[ch];
 
-    // TODO: Switch to hash lookup to improve performance even further
-    switch (ch) {
-    case '0':
-    case '1':
-    case '2':
-    case '3':
-    case '4':
-    case '5':
-    case '6':
-    case '7':
-    case '8':
-    case '9':
-      unicode = (unicode << 4) + code - 0x30;
-      break;
-    case 'A':
-    case 'B':
-    case 'C':
-    case 'D':
-    case 'E':
-    case 'F':
-      unicode = (unicode << 4) + 10 + code - 0x41;
-      break;
-    case 'a':
-    case 'b':
-    case 'c':
-    case 'd':
-    case 'e':
-    case 'f':
-      unicode = (unicode << 4) + 10 + code - 0x61;
-      break;
-    default:
+    if (parser) {
+      unicode = parser(ch.charCodeAt(0), unicode);
+    } else {
       throw new Error(errors.unexpectedCharacter(ch, i));
     }
   }
@@ -118,4 +110,17 @@ function unescapeUnicode(input, start) {
   return String.fromCharCode(unicode);
 }
 
+addParser('0123456789', (code, unicode) => (unicode << 4) + code - 0x30);
+addParser('ABCDEF', (code, unicode) => (unicode << 4) + 10 + code - 0x41);
+addParser('abcdef', (code, unicode) => (unicode << 4) + 10 + code - 0x61);
+
 module.exports = unescapeUnicode;
+
+/**
+ * TODO: Document
+ *
+ * @callback unescapeUnicode~parser
+ * @param {number} code -
+ * @param {number} unicode -
+ * @return {number}
+ */
