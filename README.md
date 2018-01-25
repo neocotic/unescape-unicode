@@ -23,17 +23,40 @@ Install using `npm`:
 $ npm install --save unescape-unicode
 ```
 
-You'll need to have at least [Node.js](https://nodejs.org) 4 or newer.
+You'll need to have at least [Node.js](https://nodejs.org) 8 or newer.
 
 ## API
 
-    unescapeUnicode(input[, start])
+### `unescapeUnicode(input[, start])`
 
-TODO: Document usage
+Converts the Unicode escape within `input`.
 
-### Examples
+The Unicode escape *must* be valid, although it can just contain hexadecimal segment. That is, it has to match the
+following pattern:
 
-TODO: Provide examples
+    (\\u)?[0-9A-Fa-f]{4}
+
+An error will be thrown if no valid Unicode escape is found.
+
+Optionally, a `start` index can be provided to begin conversion at a specific location within `input`. If `start` is not
+specified, `null`, or negative, the conversion will begin at the start of `input`.
+
+#### Examples
+
+``` javascript
+const unescapeUnicode = require('unescape-unicode');
+
+unescapeUnicode('\\u2665');
+//=> "♥"
+unescapeUnicode('2665');
+//=> "♥"
+unescapeUnicode('I \\u2665 Unicode!', 2);
+//=> "♥"
+unescapeUnicode('\\u03bb');
+//=> "λ"
+unescapeUnicode('03BB');
+//=> "λ"
+```
 
 ## Bugs
 

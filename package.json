@@ -36,6 +36,6 @@
     "posttest": "nyc check-coverage"
   },
   "engines": {
-    "node": ">=4"
+    "node": ">=8"
   }
 }
