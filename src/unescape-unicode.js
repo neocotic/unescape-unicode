@@ -49,7 +49,7 @@ function addParser(chars, parser) {
 /**
  * Returns the offset to be added on top of the specified <code>start</code> index relative to <code>input</code>.
  *
- * The offset is calculated based on whether <code>input<code> begins with "\u" or "u", or neither.
+ * The offset is calculated based on whether <code>input<code> begins with "\u".
  *
  * An error will be thrown if the initial character is a backslash but it is not followed by a lower case "u", as this
  * is not a valid Unicode escape.
@@ -63,31 +63,29 @@ function addParser(chars, parser) {
 function getOffset(input, start) {
   let ch = input[start];
 
-  switch (ch) {
-  case '\\':
+  if (ch === '\\') {
     ch = input[start + 1];
     if (ch !== 'u') {
       throw new Error(errors.unexpectedCharacter(ch, start + 1));
     }
 
     return 2;
-  case 'u':
-    return 1;
-  default:
-    return 0;
   }
+
+  return 0;
 }
 
 /**
  * Converts the Unicode escape within <code>input</code>.
  *
- * The Unicode escape <i>must</i> be valid. That is, it has to match the following pattern:
+ * The Unicode escape <i>must</i> be valid, although it can just contain hexadecimal segment. That is, it has to match
+ * the following pattern:
  *
  * <pre>
- * (\\u|u)?[0-9A-Fa-f]{4}
+ * (\\u)?[0-9A-Fa-f]{4}
  * </pre>
  *
- * An error will be thrown if a valid Unicode escape is not found.
+ * An error will be thrown if no valid Unicode escape is found.
  *
  * Optionally, a <code>start</code> index can be provided to begin conversion at a specific location within
  * <code>input</code>. If <code>start</code> is not specified, <code>null</code>, or negative, the conversion will begin
@@ -95,8 +93,6 @@ function getOffset(input, start) {
  *
  * @example
  * unescapeUnicode('\\u2665');
- * //=> "♥"
- * unescapeUnicode('u2665');
  * //=> "♥"
  * unescapeUnicode('2665');
  * //=> "♥"

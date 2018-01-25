@@ -173,26 +173,6 @@ describe('unescapeUnicode', () => {
     });
   });
 
-  context('when "u" is present at beginning of input', () => {
-    it('should convert Unicode values after "u"', () => {
-      for (const [ input, expected ] of Object.entries(tests)) {
-        const actual = unescapeUnicode(`u${input}`);
-
-        assert.equal(actual, expected);
-      }
-    });
-
-    context('and remaining input is too short', () => {
-      it('should throw an error', () => {
-        assert.throws(() => {
-          unescapeUnicode('u003');
-        }, (error) => {
-          return error instanceof Error && error.message === 'Insufficient characters found: -1';
-        });
-      });
-    });
-  });
-
   context('when start is specified', () => {
     const prefix = 'Test this: ';
 
