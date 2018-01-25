@@ -22,24 +22,23 @@
 
 'use strict';
 
-// TODO: Complete
-
 /**
- * TODO: Document
+ * Returns the error message to be used when insufficient characters were found within the input string to represent a
+ * valid Unicode escape.
  *
- * @param {number} missing -
- * @return {string}
+ * @param {number} missing - the number of characters missing (negative)
+ * @return {string} The error message.
  */
 function insufficientCharacters(missing) {
   return `Insufficient characters found: ${missing}`;
 }
 
 /**
- * TODO: Document
+ * Returns the error message to be used when an unexpected character is found within the Unicode escape.
  *
- * @param {string} ch -
- * @param {number} index -
- * @return {string}
+ * @param {string} ch - the unexpected character that was found
+ * @param {number} index - the index at which <code>ch</code> was found relative to the input string
+ * @return {string} The error message.
  */
 function unexpectedCharacter(ch, index) {
   return `Unexpected character "${ch}" found at ${index}`;

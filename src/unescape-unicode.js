@@ -22,22 +22,22 @@
 
 'use strict';
 
-// TODO: Complete
-
 const errors = require('./errors');
 
 /**
- * TODO: Document
+ * A map of parsers for valid characters found within the hexadecimal segment of a Unicode escape.
  *
- * @type {Object.<string, unescapeUnicode~parser>}
+ * This map is used for hash lookup performance.
+ *
+ * @type {Object.<string, Function>}
  */
 const parsers = {};
 
 /**
- * TODO: Document
+ * Maps the specified <code>parser</code> function to each of the characters provided.
  *
- * @param {string} chars -
- * @param {unescapeUnicode~parser} parser -
+ * @param {string} chars - a string containing the characters to be mapped to <code>parser</code>
+ * @param {Function} parser - the parser function to calculate the Unicode value for each of the characters
  * @return {void}
  */
 function addParser(chars, parser) {
@@ -47,11 +47,18 @@ function addParser(chars, parser) {
 }
 
 /**
- * TODO: Document
+ * Returns the offset to be added on top of the specified <code>start</code> index relative to <code>input</code>.
  *
- * @param {string} input -
- * @param {number} start -
- * @return {number}
+ * The offset is calculated based on whether <code>input<code> begins with "\u" or "u", or neither.
+ *
+ * An error will be thrown if the initial character is a backslash but it is not followed by a lower case "u", as this
+ * is not a valid Unicode escape.
+ *
+ * @param {string} input - the string containing the Unicode escape to which the offset is to be applied
+ * @param {number} start - the index of the Unicode escape within <code>input</code> to which the offset is to be
+ * applied (inclusive)
+ * @return {number} The additional offset to be applied to <code>start</code>.
+ * @throws {Error} If <code>input</code> doesn't contain a valid Unicode escape at <code>start</code>.
  */
 function getOffset(input, start) {
   let ch = input[start];
@@ -72,12 +79,35 @@ function getOffset(input, start) {
 }
 
 /**
- * TODO: Document
+ * Converts the Unicode escape within <code>input</code>.
  *
- * @param {?string} input -
- * @param {number} [start=0] -
- * @return {?string}
- * @throws {Error}
+ * The Unicode escape <i>must</i> be valid. That is, it has to match the following pattern:
+ *
+ * <pre>
+ * (\\u|u)?[0-9A-Fa-f]{4}
+ * </pre>
+ *
+ * An error will be thrown if a valid Unicode escape is not found.
+ *
+ * Optionally, a <code>start</code> index can be provided to begin conversion at a specific location within
+ * <code>input</code>. If <code>start</code> is not specified, <code>null</code>, or negative, the conversion will begin
+ * at the start of <code>input</code>.
+ *
+ * @example
+ * unescapeUnicode('\\u2665');
+ * //=> "♥"
+ * unescapeUnicode('u2665');
+ * //=> "♥"
+ * unescapeUnicode('2665');
+ * //=> "♥"
+ * unescapeUnicode('I \\u2665 Unicode!', 2);
+ * //=> "♥"
+ * @param {?string} input - the string containing the Unicode escape to be converted (may be <code>null</code>)
+ * @param {number} [start=0] - the index of the Unicode escape to be converted within <code>input</code> (inclusive -
+ * may be <code>null</code>)
+ * @return {?string} The Unicode character converted from the escape within <code>input</code> or <code>null</code> if
+ * <code>input</code> is <code>null</code>.
+ * @throws {Error} If <code>input</code> doesn't contain a valid Unicode escape at <code>start</code>.
  */
 function unescapeUnicode(input, start) {
   if (input == null) {
@@ -115,12 +145,3 @@ addParser('ABCDEF', (code, unicode) => (unicode << 4) + 10 + code - 0x41);
 addParser('abcdef', (code, unicode) => (unicode << 4) + 10 + code - 0x61);
 
 module.exports = unescapeUnicode;
-
-/**
- * TODO: Document
- *
- * @callback unescapeUnicode~parser
- * @param {number} code -
- * @param {number} unicode -
- * @return {number}
- */
