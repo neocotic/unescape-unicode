@@ -22,35 +22,50 @@
 
 'use strict';
 
-/**
- * Contains functions for generating error messages used throughout <code>unescape-unicode</code>.
- *
- * @type {Object.<string, Function>}
- */
-const errors = {
+const assert = require('assert');
 
-  /**
-   * Returns the error message to be used when insufficient characters were found within the input string to represent a
-   * valid Unicode escape.
-   *
-   * @param {number} missing - the number of characters missing (negative)
-   * @return {string} The error message.
-   */
-  insufficientCharacters(missing) {
-    return `Insufficient characters found: ${missing}`;
-  },
+const parse = require('../src/parse');
 
-  /**
-   * Returns the error message to be used when an unexpected character is found within the Unicode escape.
-   *
-   * @param {string} ch - the unexpected character that was found
-   * @param {number} index - the index at which <code>ch</code> was found relative to the input string
-   * @return {string} The error message.
-   */
-  unexpectedCharacter(ch, index) {
-    return `Unexpected character "${ch}" found at ${index}`;
-  }
+describe('parse', () => {
+  it('should correctly calculate Unicode value for all hexadecimal characters', () => {
+    const tests = {
+      0: 0,
+      1: 1,
+      2: 2,
+      3: 3,
+      4: 4,
+      5: 5,
+      6: 6,
+      7: 7,
+      8: 8,
+      9: 9,
+      A: 10,
+      B: 11,
+      C: 12,
+      D: 13,
+      E: 14,
+      F: 15,
+      a: 10,
+      b: 11,
+      c: 12,
+      d: 13,
+      e: 14,
+      f: 15
+    };
 
-};
+    for (const [ ch, expected ] of Object.entries(tests)) {
+      assert.equal(parse(ch, 0, 10), expected);
+      assert.equal(parse(ch, 1, 10), expected + 16);
+    }
+  });
 
-module.exports = errors;
+  context('when ch is invalid', () => {
+    it('should throw an error', () => {
+      assert.throws(() => {
+        parse('g', 0, 10);
+      }, (error) => {
+        return error instanceof Error && error.message === 'Unexpected character "g" found at 10';
+      });
+    });
+  });
+});
