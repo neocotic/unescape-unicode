@@ -2,14 +2,14 @@
   "name": "unescape-unicode",
   "version": "0.1.0",
   "description": "Converts Unicode escapes",
-  "homepage": "https://github.com/NotNinja/unescape-unicode",
+  "homepage": "https://github.com/neocotic/unescape-unicode",
   "bugs": {
-    "url": "https://github.com/NotNinja/unescape-unicode/issues"
+    "url": "https://github.com/neocotic/unescape-unicode/issues"
   },
   "author": {
     "name": "Alasdair Mercer",
     "email": "mercer.alasdair@gmail.com",
-    "url": "https://not.ninja"
+    "url": "https://neocotic.com"
   },
   "license": "MIT",
   "keywords": [
@@ -19,7 +19,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/NotNinja/unescape-unicode.git"
+    "url": "https://github.com/neocotic/unescape-unicode.git"
   },
   "devDependencies": {
     "codecov": "^3.0.0",
